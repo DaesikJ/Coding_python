@@ -4,12 +4,23 @@ Daesik Jang
 daesik0320@gmail.com
 """
 
-from itertools import combinations
+def combination(array, n):
+    result = list()
+    if n > len(array):
+        return result
+    
+    if n == 1:
+        result = [[i] for i in array]
+    elif n > 1:
+        for i in range(len(array)-n+1):
+            for j in combination(array[i+1:], n-1):
+                result.append([array[i]] + j)
+    return result
 
 def making_food(synergy_info, ingredient):
     # 모든 시너지들의 합 구하기
     synergy = 0
-    for f1, f2 in combinations(ingredient, 2):
+    for f1, f2 in combination(ingredient, 2):
         synergy += synergy_info[f1][f2] + synergy_info[f2][f1]
     
     return synergy
@@ -18,8 +29,8 @@ def solution(N, synergy_info):
     answer = 9e10
     # 식재료를 N // 2개씩 나누어 두 요리를 진행
     # 조합을 활용하여 N//2개 임의 선택 경우의 수 생성
-    for ingredient_A in combinations(range(N), N//2):
-        ingredient_B = set(range(N)) - set(ingredient_A)
+    for ingredient_A in combination(list(range(N)), N//2):
+        ingredient_B = list(set(range(N)) - set(ingredient_A))
         food_A = making_food(synergy_info, ingredient_A)
         food_B = making_food(synergy_info, ingredient_B)
 
